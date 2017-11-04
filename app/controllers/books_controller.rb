@@ -1,5 +1,6 @@
 class BooksController < ApplicationController
-  before_action :find_book, only: [:show, :edit, :update, :destroy]
+  before_action :set_book, only: [:show, :edit, :update, :destroy]
+  before_action :set_categories, only: [:new, :edit, :create]
   
   def index
     if params[:category].blank?
@@ -15,7 +16,6 @@ class BooksController < ApplicationController
   
   def new
     @book = current_user.books.build
-    @categories = Category.all.map{ |c| [c.name, c.id] }
   end
   
   def create
@@ -30,7 +30,6 @@ class BooksController < ApplicationController
   end
   
   def edit
-    @categories = Category.all.map{ |c| [c.name, c.id] }
   end
   
   def update
@@ -50,11 +49,15 @@ class BooksController < ApplicationController
   private
   
   def book_params
-    params.require(:book).permit(:title, :description, :author, :category_id)
+    params.require(:book).permit(:title, :description, :author, :category_id, :book_img)
   end
   
-  def find_book
+  def set_book
     @book = Book.find(params[:id])
+  end
+  
+  def set_categories
+    @categories = Category.all.map{ |c| [c.name, c.id] }
   end
   
 end
